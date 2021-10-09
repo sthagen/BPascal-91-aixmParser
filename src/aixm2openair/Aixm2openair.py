@@ -7,7 +7,11 @@ from rdp import rdp
 
 import bpaTools
 import aixmReader
-#import numpy as np   #Matrix sample: arr = np.array([["2","xx"], ["3","yy"], ["4","zz"]]); print(arr[:, 0]) ; print(arr[:, 1])
+
+try:
+    import xmlSIA
+except ImportError:
+    xmlSIA = None
 
 
 cstGeometry:str             = "geometry"         #Stockage du tracé Openair
@@ -33,8 +37,14 @@ def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float
     #elif theType=="TMZ":                    theClass="TMZ"
 
     openair.append("AC {0}".format(theClass))
+    if oZone["type"]!=oZone["class"]:
+        openair.append("AY {0}".format(oZone["type"]))
     openair.append("AN {0}".format(theName))
-    #old openair.append('*AAlt ["{0}", "{1}"]'.format(aixmReader.getSerializeAlt(oZone)[1:-1], aixmReader.getSerializeAltM(oZone)[1:-1]))
+
+    if xmlSIA and ("Mhz" in oZone):
+        sFreq = xmlSIA.getMasterFrequecy(oZone["Mhz"], oZone["type"], False)
+        if sFreq:   openair.append("AF {0}".format(sFreq))
+
     aAlt:list = []
     aAlt.append("{0}".format(aixmReader.getSerializeAlt (oZone)[1:-1]))
     aAlt.append("{0}".format(aixmReader.getSerializeAltM(oZone)[1:-1]))

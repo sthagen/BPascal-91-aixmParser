@@ -125,7 +125,7 @@ def getVerboseName(cat:dict) -> str:
     else:
         sVerboseName:str = "{0}".format(cat["name"])
     if xmlSIA and ("Mhz" in cat):
-        sFreq = xmlSIA.getMasterFrequecy(cat["Mhz"], cat["type"])
+        sFreq = xmlSIA.getMasterFrequecy(cat["Mhz"], cat["type"], True)
         if sFreq:
             sVerboseName += " " + sFreq
     if ("codeActivity" in cat) or ("seeNOTAM" in cat):
@@ -1226,15 +1226,13 @@ class AixmAirspaces4_5:
 
         #--------------------------------
         #Zones complémentaire avec remarques et description des activations
+        oGlobTimsh:dict = {}
         theAirspace = self.oCtrl.oAixmTools.addProperty(theAirspace, ase, "codeLocInd", "srcCodeLocInd", optional=True)        #LFFF, LIMM
         if ase.Att:
             sCodeWorkHr:str=""
             if ase.Att.codeWorkHr:
                 sCodeWorkHr = ase.Att.codeWorkHr.string
                 theAirspace = self.oCtrl.oAixmTools.addProperty(theAirspace, ase.Att, "codeWorkHr", "activationCode", optional=True)
-
-            if classZone=="D" and typeZone!="LTA" and theAirspace.get("activationCode", None)!="H24":
-                theAirspace.update({"declassifiable":True})
 
             if ase.Att.Timsh:
                 #Documentation of <Timsh> content
@@ -1300,7 +1298,6 @@ class AixmAirspaces4_5:
             		</Timsh>
                 </Att>
                 """
-                oGlobTimsh:dict = {}
                 #Interprétation de toutes les occurances de <Timsh>
                 oLstTsh = ase.Att.find_all("Timsh", recursive=False)
                 for oTsh in oLstTsh:
@@ -1342,6 +1339,28 @@ class AixmAirspaces4_5:
         if ase.txtRmk:
             if ase.txtRmk.string != ".":              #Clean data
                 theAirspace = self.oCtrl.oAixmTools.addProperty(theAirspace, ase, "txtRmk", "desc", optional=True)
+
+        #Indicateur de Zone Déclassable
+        if classZone=="D" and typeZone!="LTA":
+            if theAirspace.get("activationCode", None)=="HX":
+                desc:str = theAirspace.get("desc", "")
+                iIdxDea:int = desc.lower().find("deactivation")
+                activationDesc:str = theAirspace.get("activationDesc", "")
+                iIdxH24:int = activationDesc.lower().find("h24")
+                iIdxPos:int = activationDesc.lower().find("possible activation")
+                iIdxExe:int = activationDesc.lower().find("except")
+                if iIdxDea>=0 or iIdxH24==-1 or (iIdxH24>=0 and iIdxPos>=0) or (iIdxH24>=0 and iIdxExe>=0):
+                    theAirspace.update({"declassifiable":True})
+            if theAirspace.get("activationCode", None)=="TIMSH":
+                if len(oGlobTimsh)==1:
+                    #Contrôle du cas typique d'activation durant toute l'année : {"1": ["UTCW(01/01->31/12)", "ANY(00:00->23:59)"]}
+                    #iIdxDays:int = oGlobTimsh[1][0].lower().find("01/01->31/12")
+                    iIdxHour:int = oGlobTimsh[1][1].lower().find("any(00:00->23:59)")
+                    if iIdxHour==-1:
+                        theAirspace.update({"declassifiable":True})
+            elif theAirspace.get("activationCode", None)!="H24":
+                theAirspace.update({"declassifiable":True})
+
 
         #--------------------------------
         #Traitement spécifique pour signaler les zones non-activables...

@@ -99,11 +99,11 @@ def makeAixm(sCircle:str="", sRadius:str="", sAvx:str="") -> None:
     #oAbd = oXml.addTag(oRoot, "Abd")
     oAbd = oXml.createRoot("Abd")
     oAbdUid = oXml.addTag(oAbd, "AbdUid")
-    oXml.addAttrib(oAbdUid, "mid", "BPa-FR-SIA-SUPAIP-2021-???-?name?-?type?")
+    oXml.addAttrib(oAbdUid, "mid", "BPa-FR-SIA-SUPAIP-2021-NNN-name-type")
     oAseUid = oXml.addTag(oAbdUid, "AseUid")
-    oXml.addAttrib(oAseUid, "mid", "BPa-FR-SIA-SUPAIP-2021-???-?name?-?type?")
-    oXml.addTag(oAseUid, "codeType", sValue="???")
-    oXml.addTag(oAseUid, "codeId", sValue="???")
+    oXml.addAttrib(oAseUid, "mid", "BPa-FR-SIA-SUPAIP-2021-NNN-name-type")
+    oXml.addTag(oAseUid, "codeType", sValue="?TYPE")
+    oXml.addTag(oAseUid, "codeId", sValue="?ID")
 
     if sCircle:
         oCircle = oXml.addTag(oAbd, "Circle")
@@ -132,15 +132,16 @@ def makeAixm(sCircle:str="", sRadius:str="", sAvx:str="") -> None:
 if __name__ == '__main__':
 
     sRadius:str =   "16"     #In MN Miles Nautic  - https://www.google.com/search?client=firefox-b-d&q=convertion+milenautique
-    sCircle:str =   ""#"43°08'19.00'' N, 001°54'23.00'' E"
+    sCircle:str =   ""  #"43°08'19.00'' N, 001°54'23.00'' E"
     sAvx:str    =   """
-49°06'50'' N, 006°02'37'' E
-49°07'17'' N, 006°03'59'' E
-49°07'02'' N, 006°04'19'' E
-49°06'53'' N, 006°04'02'' E
-49°06'02'' N, 006°04'04'' E
-49°05'52'' N, 006°03'16'' E
-49°06'50'' N, 006°02'37'' E
+47°43’00.00’’N, 006°59’00.00’’E
+47°31’30.00’’N, 006°59’00.00’’E
+47°32’00.00’’N, 006°49’00.00’’E
+47°33’30.00’’N, 006°45’30.00’’E
+47°40’00.00’’N, 006°42’00.00’’E
+47°39’30.00’’N, 006°51’00.00’’E
+47°41’00.00’’N, 006°51’00.00’’E
+47°43’00.00’’N, 006°59’00.00’’E
                     """
 
     sCircle = sCircle.strip()

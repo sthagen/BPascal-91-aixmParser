@@ -8,6 +8,7 @@ import numpy as np
 import srtm
 #from copy import deepcopy
 
+appVersion  = "1.6.1"
 defEstimHeight:list         = [0, 0, 0, 0]
 errNoArea:list              = [-999, -999, -999, -999]
 errLocalisationPoint:list   = [-5,45]
@@ -343,7 +344,6 @@ if __name__ == '__main__':
     bpaTools.ctrlPythonVersion()
     appName     = bpaTools.getFileName(__file__)
     appPath     = bpaTools.getFilePath(__file__)
-    appVersion  = "1.6.1"
     appId       = appName + " v" + appVersion
     outPath     = appPath + "../out/"
     srcPath     = outPath

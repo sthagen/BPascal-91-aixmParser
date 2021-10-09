@@ -450,13 +450,11 @@ class Aixm2json4_5:
             lat_c, lon_c = self.oCtrl.oAixmTools.geo2coordinates("dd", avx_list[0],oZone=oZone)
 
             #Radius in Meter for GeoJSON format / Depend of area type
-            radius:float = float(1000)              #Fixe un rayon de 1000m par défaut
-            if   oZone["type"] in ["TRVL"]:         #TRVL Treuil-Vol-Libre
-                radius = float(2000)                #Fixe un rayon de 2000m
-            elif oZone["type"] in ["TRPLA"]:        #TRPLA Treuil Planeurs
-                radius = float(5000)                #Fixe un rayon de 5000m
-            elif oZone["type"] in ["PJE"]:          #PJE=Parachute Jumping Exercise
-                radius = float(1000)                #Fixe un rayon de 1000m
+            radius:float = float(2500)              #Fixe un rayon de 2500m par défaut
+            if oZone["type"] in ["TRPLA"]:          #TRPLA Treuil Planeurs
+                radius = float(6000)                #Fixe un rayon de 5000m
+            #if oZone["type"] in ["TRVL"]:          #Pas de Cght - TRVL Treuil-Vol-Libre
+            #if oZone["type"] in ["PJE"]:           #Pas de Cght - PJE=Parachute Jumping Exercise
 
             Pcenter = Point(lon_c, lat_c)
             if self.oCtrl.MakePoints4map:
