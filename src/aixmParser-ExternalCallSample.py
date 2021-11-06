@@ -33,7 +33,7 @@ if __name__ == '__main__':
     #srcFile = "../../poaff/input/BPa/20201210_BPa_ZonesComplementaires_aixm45.xml"
     #srcFile = "../../poaff/input/BPa/20210614_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml"
     #srcFile = "../../poaff/input/FFVL/20210518_FFVL_ProtocolesParticuliers_BPa_aixm45.xml"
-    srcFile = "../../poaff/input/BPa/20211004_BPa_FR-SIA-SUPAIP_aixm45.xml"
+    srcFile = "../../poaff/input/BPa/20211103_BPa_FR-SIA-SUPAIP_aixm45.xml"
 
 
     ####  quelques options d'appels  ####

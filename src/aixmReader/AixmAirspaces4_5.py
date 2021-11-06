@@ -1165,7 +1165,7 @@ class AixmAirspaces4_5:
         #Eventuel filtrage complémentaire pour requalification des zones 'vfrZone' & 'freeFlightZone' (zones spécifiques Vol-Libre Parapente/Delta)
         if bvfrZone and ("lowerValue" in theAirspace) and ("upperValue" in theAirspace):
             bLowInfFL115 = bool(low<3505)       #Plancher strictement en dessous FL115/3505m
-            #bLowInfFL175 = bool(low<5334)       #Plancher strictement en dessous FL175/5334m
+            #bLowInfFL175 = bool(low<5334)      #Plancher strictement en dessous FL175/5334m
             bLowInfFL195 = bool(low<5943)       #Plancher strictement en dessous FL195/5944m
             bUppInfFL115 = bool(up<=3505)       #Plafond en dessous, et jusqu'au FL115/3505m
 

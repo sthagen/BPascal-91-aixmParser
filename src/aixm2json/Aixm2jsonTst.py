@@ -210,7 +210,6 @@ class Aixm2jsonTst:
         lat, lon = self.oAixmTools.geo2coordinates("dd", None,                        #abd.circle
                                         latitude="484140.20N",       #abd.geolatcen.string
                                         longitude="0022002.50E")     #abd.geolongcen.string
-
         geojson=[]
         p0 = Point(lon, lat)
         radius20 = float("20")      #en mètres

@@ -429,13 +429,9 @@ class Aixm2openair:
             openair.append("V X={0} {1}".format(sLat_c, sLon_c))
 
             #radius in Nautical Mile for Openair format / Depend of area type
-            radius:float = float(0.54)              #Fixe un rayon de 1000m par défaut
-            if   oZone["type"] in ["TRVL"]:         #TRVL Treuil-Vol-Libre
-                radius = float(1.08)                #Fixe un rayon de 2000m
-            elif oZone["type"] in ["TRPLA"]:        #TRPLA Treuil Planeurs
-                radius = float(2.7)                 #Fixe un rayon de 5000m
-            elif oZone["type"] in ["PJE"]:          #PJE=Parachute Jumping Exercise
-                radius = float(0.54)                #Fixe un rayon de 1000m
+            radius:float = float(0.54)                      #Fixe un rayon de 1000m par défaut
+            if oZone["type"] in ["TRPLA","TRVL","PJE"]:     #TRPLA=Treuil Planeurs / TRVL=Treuil-Vol-Libre / PJE=Parachute Jumping Exercise
+                radius = float(1.08)                        #Fixe un rayon de 2000m
 
             openair.append("DC {0}".format(radius))
             self.geoAirspaces.append({"type":"Openair", "properties":oZone, cstGeometry:openair})
