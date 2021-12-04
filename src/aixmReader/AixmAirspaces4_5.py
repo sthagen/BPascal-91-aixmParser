@@ -126,7 +126,7 @@ def getVerboseName(cat:dict) -> str:
         sVerboseName:str = "{0}".format(cat["name"])
     if xmlSIA and ("Mhz" in cat):
         sFreq = xmlSIA.getMasterFrequecy(cat["Mhz"], cat["type"], True)
-        if sFreq:
+        if sFreq and (not sFreq in sVerboseName):
             sVerboseName += " " + sFreq
     if ("codeActivity" in cat) or ("seeNOTAM" in cat):
         sVerboseName += " ("
