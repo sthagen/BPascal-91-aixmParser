@@ -578,6 +578,7 @@ class Aixm2json4_5:
                     include = True
                 elif context=="ifr":
                     include = (not oZone["vfrZone"]) and (not oZone["groupZone"])
+                    include = include and not (oZone.get("vfrZoneExt", False))   	#Ne pas prendre en compte les extensions de vol possible qui sont déjà emabrqués dans les cartos VFR
                 elif context=="vfr":
                     include = oZone["vfrZone"]
                     include = include or oZone.get("vfrZoneExt", False)     		#Exporter l'extension de vol possible en VFR de 0m jusqu'au FL195/5944m

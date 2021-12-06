@@ -93,7 +93,7 @@ class AixmTools:
                 sRet += "*" + " "*lLeftMargin + "(i)Information - '{0}' - Cartographie avec filtrage géographique des zones aériennes : {1}\n".format(sAreaKey, sAreaDesc)
 
             if context=="ifr":
-                sRet += "*" + " "*lLeftMargin + "/!\Warning - 'IFR Map' - Cartographie de l'espace aérien IFR (zones majotitairement situées au dessus du niveau FL115)\n"
+                sRet += "*" + " "*lLeftMargin + "/!\Warning - 'IFR Map' - Cartographie de l'espace aérien IFR (zones majotitairement situées au dessus du niveau FL195)\n"
             elif context=="vfr":
                 sRet += "*" + " "*lLeftMargin + "/!\Warning - 'VFR Map' - Cartographie de l'espace aérien VFR (zones situées de la surface jusqu'au FL195/5944m)\n"
             elif context=="ff":

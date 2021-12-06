@@ -45,6 +45,13 @@ def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float
         sFreq = xmlSIA.getMasterFrequecy(oZone["Mhz"], oZone["type"], False)
         if sFreq:   openair.append("AF {0}".format(sFreq))
 
+    sGUId:str = oZone.get("srcGUId", None)
+    if sGUId==None:     sGUId = oZone.get("GUId", "!")
+    sUId:str = oZone.get("srcUId", None)
+    if sUId==None:      sUId:str = oZone.get("UId", "!")
+    sId:str = oZone.get("id", "!")
+    openair.append("*AUID GUId={0} UId={1} Id={2}".format(sGUId, sUId, sId))
+
     aAlt:list = []
     aAlt.append("{0}".format(aixmReader.getSerializeAlt (oZone)[1:-1]))
     aAlt.append("{0}".format(aixmReader.getSerializeAltM(oZone)[1:-1]))
@@ -59,14 +66,11 @@ def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float
     else:
         openair.append('*AAlt ["{0}", "{1}"]'.format(aAlt[0], aAlt[1]))
 
-    sGUId:str = oZone.get("srcGUId", None)
-    if sGUId==None:     sGUId = oZone.get("GUId", "!")
-    sUId:str = oZone.get("srcUId", None)
-    if sUId==None:      sUId:str = oZone.get("UId", "!")
-    sId:str = oZone.get("id", "!")
-    openair.append("*AUID GUId={0} UId={1} Id={2}".format(sGUId, sUId, sId))
-
     if "desc" in oZone:     openair.append("*ADescr {0}".format(oZone["desc"]))
+    if ("activationCode" in oZone) and ("activationDesc" in oZone):       openair.append("*AActiv [{0}] {1}".format(oZone["activationCode"], oZone["activationDesc"]))
+    if ("activationCode" in oZone) and not ("activationDesc" in oZone):   openair.append("*AActiv [{0}]".format(oZone["activationCode"]))
+    if not("activationCode" in oZone) and ("activationDesc" in oZone):    openair.append("*AActiv {0}".format(oZone["activationDesc"]))
+    if "timeScheduling" in oZone:   openair.append("*ATimes {0}".format(json.dumps(oZone["timeScheduling"], ensure_ascii=False)))
     if "Mhz" in oZone:
         if isinstance(oZone["Mhz"], str):
             sDict:str = bpaTools.getContentOf(oZone["Mhz"], "{", "}", bRetSep=True)
@@ -76,11 +80,8 @@ def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float
         else:
             oAMhz:dict = None
         openair.append("*AMhz {0}".format(json.dumps(oAMhz, ensure_ascii=False)))
-    if ("activationCode" in oZone) and ("activationDesc" in oZone):       openair.append("*AActiv [{0}] {1}".format(oZone["activationCode"], oZone["activationDesc"]))
-    if ("activationCode" in oZone) and not ("activationDesc" in oZone):   openair.append("*AActiv [{0}]".format(oZone["activationCode"]))
-    if not("activationCode" in oZone) and ("activationDesc" in oZone):    openair.append("*AActiv {0}".format(oZone["activationDesc"]))
+
     if bool(oZone.get("declassifiable",  False)):   openair.append("*ADecla Yes")
-    if "timeScheduling" in oZone:   openair.append("*ATimes {0}".format(json.dumps(oZone["timeScheduling"], ensure_ascii=False)))
     if bool(oZone.get("exceptSAT", False)):         openair.append("*AExSAT Yes")
     if bool(oZone.get("exceptSUN", False)):         openair.append("*AExSUN Yes")
     if bool(oZone.get("exceptHOL", False)):         openair.append("*AExHOL Yes")
@@ -624,6 +625,7 @@ class Aixm2openair:
                         include = True
                     elif context=="ifr":
                         include = (not oZone["vfrZone"]) and (not oZone["groupZone"])
+                        include = include and not (oZone.get("vfrZoneExt", False))   	#Ne pas prendre en compte les extensions de vol possible qui sont déjà emabrqués dans les cartos VFR
                     elif context=="vfr":
                         include = oZone["vfrZone"]
                         include = include or oZone.get("vfrZoneExt", False)   			#Exporter l'extension de vol possible en VFR de 0m jusqu'au FL195/5944m
