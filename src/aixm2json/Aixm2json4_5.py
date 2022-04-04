@@ -118,13 +118,19 @@ def addColorProperties(prop:dict, dstProp:dict, oLog:bpaTools.Logger):
             nFillOpacity = 0.4
         else:
             nFillOpacity = 0.2
+    #Black
+    elif sClass in ["AREA"]:
+        sStroke = "#000"
+        sFill = "#000"
+        nFillOpacity = 0.1
+
     else:
         oLog.warning("GeoJSON Color not found for Class={0}".format(sClass), outConsole=False)
         return
 
     #Quasi transparence pour toutes les zones au dessus de FL115
     if nFillOpacity!=0 and prop.get("lowerM", None)>=3505:
-            nFillOpacity = 0.1
+        nFillOpacity = 0.1
 
     dstProp.update({"stroke": sStroke})
     dstProp.update({"stroke-width": 2})

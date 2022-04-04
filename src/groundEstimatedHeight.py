@@ -8,7 +8,7 @@ import numpy as np
 import srtm
 #from copy import deepcopy
 
-appVersion  = "1.6.1"
+appVersion  = "1.6.2"
 defEstimHeight:list         = [0, 0, 0, 0]
 errNoArea:list              = [-999, -999, -999, -999]
 errLocalisationPoint:list   = [-5,45]
@@ -178,7 +178,7 @@ class GroundEstimatedHeight:
         #Chargement des éléments inconnus du référetentiel
         sSrcFileName = self.refPath + self.sUnknownGroundHeightFileName
         if not os.path.exists(sSrcFileName):
-            self.oLog.error("File not found - {0} ".format(sSrcFileName), outConsole=True)
+            self.oLog.info("parseUnknownGroundHeightRef() File not found - {0} ".format(sSrcFileName), outConsole=True)
             return
         oUnknownGroundHeight = bpaTools.readJsonFile(sSrcFileName)
         oGroundEstimatedHeight = dict()
@@ -233,7 +233,7 @@ class GroundEstimatedHeight:
                 if not os.path.exists(sGeoJsonFileName):
                     sGeoJsonFileName = self.srcPath + self.headFileName + "airspaces-freeflight.geojson"
             if not os.path.exists(sGeoJsonFileName):
-                self.oLog.error("File not found - {0} ".format(sGeoJsonFileName), outConsole=True)
+                self.oLog.error("parseUnknownGroundHeightRef() File not found - {0}".format(sGeoJsonFileName), outConsole=True)
                 return
             oGeoJsondata = bpaTools.readJsonFile(sGeoJsonFileName)
             self.oLog.info("Load source data file : {0}".format(sGeoJsonFileName), outConsole=False)

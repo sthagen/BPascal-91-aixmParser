@@ -131,16 +131,14 @@ def makeAixm(sCircle:str="", sRadius:str="", sAvx:str="") -> None:
 
 if __name__ == '__main__':
 
-    sRadius:str =   "16"     #In MN Miles Nautic  - https://www.google.com/search?client=firefox-b-d&q=convertion+milenautique
-    sCircle:str =   ""  #"43°08'19.00'' N, 001°54'23.00'' E"
+    sRadius:str =   "4"     #In MN Miles Nautic  - https://www.google.com/search?client=firefox-b-d&q=convertion+milenautique
+    sCircle:str =   "" #"47°59'16''N - 001°45'38''E"
     sAvx:str    =   """
-45°00'57'' N, 005°49'23'' E
-45°04'00'' N, 005°55'57'' E
-45°02'47'' N, 006°03'09'' E
-44°52'22'' N, 006°01'50'' E
-44°49'44'' N, 005°40'05'' E
-45°00'52'' N, 005°38'05'' E
-45°00'57'' N, 005°49'23'' E
+47°05'03'' N - 000°35'51'' E
+47°03'11'' N - 000°34'59'' E
+47°03'59'' N - 000°19'17'' E
+47°11'32'' N - 000°20'29'' E
+47°05'03'' N - 000°35'51'' E
                     """
 
     sCircle = sCircle.strip()

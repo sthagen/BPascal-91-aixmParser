@@ -32,9 +32,9 @@ if __name__ == '__main__':
     #srcFile = "../../poaff/input/FFVL/20210122_FFVL_ZonesComplementaires_aixm45.xml"
     #srcFile = "../../poaff/input/BPa/20210114_LTA-French1-HR_BPa_aixm45.xml"
     #srcFile = "../../poaff/input/BPa/20201210_BPa_ZonesComplementaires_aixm45.xml"
-    #srcFile = "../../poaff/input/BPa/20210614_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml"
-    #srcFile = "../../poaff/input/FFVL/20210518_FFVL_ProtocolesParticuliers_BPa_aixm45.xml"
-    srcFile = "../../poaff/input/BPa/20211204_BPa_FR-SIA-SUPAIP_aixm45.xml"
+    srcFile = "../../poaff/input/BPa/20220402_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml"
+    #srcFile = "../../poaff/input/FFVL/20220402_FFVL_ProtocolesParticuliers_BPa_aixm45.xml"
+    #srcFile = "../../poaff/input/BPa/20220314_BPa_FR-SIA-SUPAIP_aixm45.xml"
 
 
     ####  quelques options d'appels  ####

@@ -58,12 +58,15 @@ class AixmTools:
     def makeHeaderOpenairFile(self, oHeader, oOpenair, context="", gpsType="", exceptDay="", sAreaKey="", sAreaDesc="", aAddHeader=[], digit:int=None, epsilonReduce:float=None) -> str:
         lLeftMargin:int=3
         sRet:str=""
+        sHead:str=""
+        if context=="GoogleMaps":
+            sHead = "//"            #Spec for Javascript Comment
         sizeMap = len(oOpenair)
         if sizeMap:
-            sRet += "*"*50 + "\n"
+            sRet += sHead + "*"*50 + "\n"
             for oKey, oVal in oHeader.items():
                 if isinstance(oVal, dict):
-                    sRet += "*" + " "*lLeftMargin + "{0}:\n".format(oKey)
+                    sRet += sHead + "*" + " "*lLeftMargin + "{0}:\n".format(oKey)
                     lFileCnt:int = 0
                     for oKey2, oVal2 in oVal.items():
                         #Demande de Léo 01/2021, sortir toutes les références des fichiers
@@ -71,37 +74,38 @@ class AixmTools:
                             lFileCnt += 1
                             if isinstance(oVal2, dict):
                                 oVal2 = json.dumps(oVal2, ensure_ascii=False)
-                            sRet += "*" + " "*2*lLeftMargin + "{0} - {1}\n".format(oKey2, oVal2)
+                            sRet += sHead + "*" + " "*2*lLeftMargin + "{0} - {1}\n".format(oKey2, oVal2)
                         #else:
-                        #    sRet += "*" + " "*2*lLeftMargin + "../.. and {0} complementary sources files. See Catalog file header for all details.\n".format(len(oHeader)-lFileCnt+1)
+                        #    sRet += sHead + "*" + " "*2*lLeftMargin + "../.. and {0} complementary sources files. See Catalog file header for all details.\n".format(len(oHeader)-lFileCnt+1)
                         #    break
                 else:
                     if oKey=="content" and (digit!=None or epsilonReduce!=None):
                         if digit!=None and epsilonReduce!=None: oVal = "{0} [digit={1}/rdp={2}]".format(oVal, digit, epsilonReduce)
                         elif digit!=None:                       oVal = "{0} [digit={1}]".format(oVal, digit)
                         elif epsilonReduce!=None:               oVal = "{0} [rdp={1}]".format(oVal, epsilonReduce)
-                    sRet += "*" + " "*lLeftMargin + "{0} - {1}\n".format(oKey, oVal)
+                    sRet += sHead + "*" + " "*lLeftMargin + "{0} - {1}\n".format(oKey, oVal)
 
-            sRet += "*" + " "*lLeftMargin + "-"*44 + "\n"
+            sRet += sHead + "*" + " "*lLeftMargin + "-"*44 + "\n"
 
             if digit!=None or epsilonReduce!=None:
-                sRet += "*" + " "*lLeftMargin + "(i)Information - Le tracé de certaines zones est optimisé. Identifiable par: '***(aixmParser) Openair Segments Optimisés'\n"
+                sRet += sHead + "*" + " "*lLeftMargin + "(i)Information - Le tracé de certaines zones est optimisé\n"
             if aAddHeader:
                 for sContent in aAddHeader:
-                    sRet += "*" + " "*lLeftMargin + "(i)Information - " + sContent + "\n"
+                    sRet += sHead + "*" + " "*lLeftMargin + "(i)Information - " + sContent + "\n"
             if sAreaKey:
-                sRet += "*" + " "*lLeftMargin + "(i)Information - '{0}' - Cartographie avec filtrage géographique des zones aériennes : {1}\n".format(sAreaKey, sAreaDesc)
+                sRet += sHead + "*" + " "*lLeftMargin + "(i)Information - '{0}' - Cartographie avec filtrage géographique des zones aériennes : {1}\n".format(sAreaKey, sAreaDesc)
 
             if context=="ifr":
-                sRet += "*" + " "*lLeftMargin + "/!\Warning - 'IFR Map' - Cartographie de l'espace aérien IFR (zones majotitairement situées au dessus du niveau FL195)\n"
+                sRet += sHead + "*" + " "*lLeftMargin + "/!\Warning - 'IFR Map' - Cartographie de l'espace aérien IFR (zones majotitairement situées au dessus du niveau FL195)\n"
             elif context=="vfr":
-                sRet += "*" + " "*lLeftMargin + "/!\Warning - 'VFR Map' - Cartographie de l'espace aérien VFR (zones situées de la surface jusqu'au FL195/5944m)\n"
+                sRet += sHead + "*" + " "*lLeftMargin + "/!\Warning - 'VFR Map' - Cartographie de l'espace aérien VFR (zones situées de la surface jusqu'au FL195/5944m)\n"
             elif context=="ff":
-                sRet += "*" + " "*lLeftMargin + "/!\Warning - 'Free Flight Map' - Version VFR spécifique Parapente/Deltaplane (zones situées en dessous le niveau FL195 avec filtrage des zones de type 'E, F, G et W')\n"
+                sRet += sHead + "*" + " "*lLeftMargin + "/!\Warning - 'Free Flight Map' - Version VFR spécifique Parapente/Deltaplane (zones situées en dessous le niveau FL195 avec filtrage des zones de type 'E, F, G et W')\n"
             else:
-                sRet += "*" + " "*lLeftMargin + "(i)Information - 'ALL Map' - Cartographie complète de l'espace aérien (IFR + VFR)\n"
+                sRet += sHead + "*" + " "*lLeftMargin + "(i)Information - 'ALL Map' - Cartographie complète de l'espace aérien (IFR + VFR)\n"
 
             aToken = ["geoFrenchNorth", "geoFrenchSouth", "geoFrenchNESW", "geoFrenchVosgesJura", "geoFrenchPyrenees", "geoFrenchAlps"]
+            gpsTypeDesc:str = ""
             if gpsType=="-gpsWithTopo":
                 if sAreaKey in aToken:
                     gpsTypeDesc = "Openair limitedMemory withTopo"
@@ -116,9 +120,8 @@ class AixmTools:
                 else:
                     gpsTypeDesc = "Openair withoutTopo"
                     gpsExplain = "Flytec / Brauniger et tout autres appareils/logiciels SANS Carte-Topographique (n'ayant pas la capacité de connaître les altitudes terrain)"
-            else:
-                gpsSample = "???"
-            sRet += "*" + " "*lLeftMargin + "/!\Warning - '{0}' - Cartographie pour {1}\n".format(gpsTypeDesc, gpsExplain)
+            if gpsTypeDesc:
+                sRet += sHead + "*" + " "*lLeftMargin + "/!\Warning - '{0}' - Cartographie pour {1}\n".format(gpsTypeDesc, gpsExplain)
 
             if exceptDay:
                 if exceptDay=="exceptSAT":
@@ -131,9 +134,9 @@ class AixmTools:
                     sDay1 = "HOLiday"
                     sDay2 = "Jours-Fériés"
                 ext4exceptDay = exceptDay.replace("except","-for")
-                sRet += "*" + " "*lLeftMargin + "/!\Warning - '{0}' - Fichier spécifiquement utilisable les '{1}/{2}' (dépourvu des zones non-activables '{3}')\n".format(ext4exceptDay[1:], sDay1, sDay2, exceptDay)
+                sRet += sHead + "*" + " "*lLeftMargin + "/!\Warning - '{0}' - Fichier spécifiquement utilisable les '{1}/{2}' (dépourvu des zones non-activables '{3}')\n".format(ext4exceptDay[1:], sDay1, sDay2, exceptDay)
 
-            sRet += "*"*50 + "\n\n"
+            sRet += sHead + "*"*50 + "\n\n"
         return sRet
 
     def writeOpenairFile(self, sFileName, oOpenair, context="", gpsType="-gpsWithTopo", exceptDay="", digit:int=None, epsilonReduce:float=None):
@@ -183,11 +186,10 @@ class AixmTools:
                 output.write(oText)
         return
 
-
     def getJsonPropHeaderFile(self, sFileName="", context="", sizeMap=0) -> dict:
         prop = dict()
         prop.update({"software": self.oCtrl.oLog.getLongName()})
-        prop.update({"created": datetime.datetime.now().isoformat()})
+        prop.update({"created": datetime.datetime.now().isoformat() + " - " + bpaTools.getCopyright()})
         prop.update({"content": sFileName})
         if context=="all":
             prop.update({"allMap": True})

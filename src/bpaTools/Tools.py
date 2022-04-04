@@ -7,6 +7,12 @@ import json, unicodedata
 
 from bpaTools import Logger
 
+def getCopyright() -> str:
+    ret:str = "(FR) Pascal Bazile (c) "
+    ret += getDateNow(sep="/", frmt="my")
+    ret += " - https://www.data.gouv.fr/fr/datasets/cartographies-aeriennes-dediees-a-la-pratique-du-vol-libre/"
+    return ret
+
 def isInteger(s:str) -> bool:
     try:
         n:int = int(s)
@@ -100,6 +106,9 @@ def getRightOf(sSrc:str, sFind:str) -> str:
     else:
         return None
 
+def getFileNameExt(sFile:str) -> str:
+    return os.path.basename(sFile)
+
 def getFileName(sFile:str) -> str:
     return os.path.basename(sFile).split(".")[0]
 
@@ -154,8 +163,12 @@ def getDateNow(sep:str="", frmt="ymd") -> str:
 def getDate(date:datetime, sep:str="", frmt="ymd") -> str:
     if   frmt=="ymd":
         sFrmt = "%Y" + sep + "%m" + sep + "%d"
+    elif frmt=="ym":
+        sFrmt = "%Y" + sep + "%m"
     elif frmt=="dmy":
         sFrmt = "%d" + sep + "%m" + sep + "%Y"
+    elif frmt=="my":
+        sFrmt = "%m" + sep + "%Y"
     else:
         sFrmt = frmt            #Specific format
     return date.strftime(sFrmt)
@@ -194,7 +207,6 @@ def addDatetime(srcdate:datetime, minutes:int=0, hours:int=0, day:int=0, days:in
     if months:      ret += relativedelta(months=months)
     if years:       ret += relativedelta(years=years)
     return ret
-
 
 def getVersionFile(versionPath:str="", versionFile:str="_version.py") -> str:
     fileContent = open(versionPath + versionFile, "rt").read()
@@ -324,7 +336,6 @@ if __name__ == '__main__':
     print(datetime.date.today() + datetime.timedelta(days=31))
     """
 
-
     theDate = datetime.datetime.now()   #or datetime.date.today()  or datetime(2021,2,16)
     print("Now        ", addDatetime(theDate))
     print("minutes= -1", addDatetime(theDate, minutes=-1))
@@ -363,7 +374,6 @@ if __name__ == '__main__':
     x = list(rrule(freq=MONTHLY, count=9, dtstart=theDate, byweekday=TU(2)))
     for tuesday in x:
         print(tuesday)
-
 
     """
     print(getContentOf('{"1":"Value"}', "{", "}", bRetSep=True))
