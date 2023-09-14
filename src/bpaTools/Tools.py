@@ -249,9 +249,9 @@ def readJsonFile(sFile:str) -> dict:
         jdata = {}
     return jdata
 
-def writeJsonFile(sFile:str, jdata:dict) -> None:
+def writeJsonFile(sFile:str, jdata:dict, ensure_ascii:bool=False) -> None:
     jsonFile = open(sFile, "w", encoding="utf-8")
-    json.dump(jdata, jsonFile, ensure_ascii=False)
+    json.dump(jdata, jsonFile, ensure_ascii=ensure_ascii)
     jsonFile.close()
     return
 

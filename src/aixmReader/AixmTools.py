@@ -30,7 +30,7 @@ class AixmTools:
         self.pWGS = Proj("epsg:4326")            # EPSG:4326 = WGS84 / Geodetic coordinate system for World  :: Deprecated format --> Proj(init="epsg:4326")
         self.bSrcFileIsSIAorEur:bool = False
         if self.oCtrl:
-            self.bSrcFileIsSIAorEur = bool(self.oCtrl.oAixm.srcOrigin.lower() in ["sia-france","ead-sdo"])     #Fichier source issu du SIA ou d'Eurocontrol
+            self.bSrcFileIsSIAorEur = bool(self.oCtrl.oAixm.srcOrigin.lower() in ["sia-france","ead-sdo","bpa-test"])     #Fichier source issu du SIA ou d'Eurocontrol
         return
 
     def writeGeojsonFile(self, sFileName, oGeojson, context=""):
@@ -218,11 +218,11 @@ class AixmTools:
 
 
     #outputFormat enumeration: [
-    #   ""              = Native format                                                     (without change)
-    #   "dd"            = Degrés décimaux (D.d)
-    #   "dmd"           = Degrés minutes décimaux (DM.d)
-    #   "DDMMSS.ssX"    = Short (DMS.d) - Standard serialize without separator
-    #   "DD:MM:SS.ssX"  = Long  (DMS.d) - Optimized Serialize with separators (use for Openair format)
+    #   ""               = Native format                                                     (without change)
+    #   "dd"             = Degrés décimaux (D.d)
+    #   "dmd"            = Degrés minutes décimaux (DM.d)
+    #   "DDMMSS.ssX"     = Short (DMS.d) - Standard serialize without separator
+    #   "DD:MM:SS.ss X"  = Long  (DMS.d) - Optimized Serialize with separators (use for Openair format)
     def geo2coordinates(self, outputFormat:str, o, latitude=None, longitude=None, oZone:dict=None) -> list:
         """ codeDatum or CODE_DATUM Format:
             WGE [WGS-84 (GRS-80).]
@@ -318,8 +318,8 @@ class AixmTools:
             elif outputFormat=="D:M:S.ssX":
                 sLat2, sLon2 = bpaTools.GeoCoordinates.geoStr2coords(sLat, sLon, outFrmt="dms", sep1=":", sep2="", bOptimize=True, digit=iDigit)
                 return [sLat2, sLon2]
-            elif outputFormat=="DD:MM:SS.ssX":
-                sLat2, sLon2 = bpaTools.GeoCoordinates.geoStr2coords(sLat, sLon, outFrmt="dms", sep1=":", sep2="", bOptimize=False, digit=iDigit)
+            elif outputFormat=="DD:MM:SS.ss X":
+                sLat2, sLon2 = bpaTools.GeoCoordinates.geoStr2coords(sLat, sLon, outFrmt="dms", sep1=":", sep2=" ", bOptimize=False, digit=iDigit)
                 return [sLat2, sLon2]
             else:
                 if self.oCtrl:
@@ -687,7 +687,7 @@ if __name__ == '__main__':
     oTools = AixmTools(None)
     for aPt in aPoints:
         print(oTools.geo2coordinates("", None, aPt[0], aPt[1]))
-        print(oTools.geo2coordinates("DD:MM:SS.ssX", None, aPt[0], aPt[1]))
+        print(oTools.geo2coordinates("DD:MM:SS.ss X", None, aPt[0], aPt[1]))
         print(oTools.geo2coordinates("dd", None, aPt[0], aPt[1]))
         print("---")
 

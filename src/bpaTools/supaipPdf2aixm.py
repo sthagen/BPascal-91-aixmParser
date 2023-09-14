@@ -7,6 +7,7 @@ def cleanCoords(sCoords:str="") -> str:
     sCoords = sCoords.replace("°","")
     sCoords = sCoords.replace("'","")
     sCoords = sCoords.replace("’","")
+    sCoords = sCoords.replace('”',"")
     sCoords = sCoords.replace("\"","")
     sCoords = sCoords.replace(" N","N")
     sCoords = sCoords.replace(" S","S")
@@ -41,6 +42,8 @@ def getCoords(sCoords:str="") -> list:
                     iStart = iPos+len(sTocken)
                     if iPos>0 and sCoord[iStart:iStart+1] in aTocken:
                         aCoords[iIdx] = sCoord.replace(sTocken,"")
+                if aCoords[0][0]=='0' and (len(aCoords[0])==8 or len(aCoords[0])==11):   #Ctrl format
+                    aCoords[0] = aCoords[0][1:]                 #format '0434801N' to '434801N'
                 if len(aCoords[1])==7:                          #Ctrl format
                     aCoords[1] = "0" + aCoords[1]               #format '032624W' to '0032624W'
                 sTocken = "."
@@ -131,18 +134,64 @@ def makeAixm(sCircle:str="", sRadius:str="", sAvx:str="") -> None:
 
 if __name__ == '__main__':
 
-    sRadius:str =   "4"     #In MN Miles Nautic  - https://www.google.com/search?client=firefox-b-d&q=convertion+milenautique
+    sRadius:str =   "1.5"   #"0.5"     #In MN Miles Nautic  - https://www.google.com/search?client=firefox-b-d&q=convertion+milenautique
     sCircle:str =   "" #"47°59'16''N - 001°45'38''E"
     sAvx:str    =   """
-47°05'03'' N - 000°35'51'' E
-47°03'11'' N - 000°34'59'' E
-47°03'59'' N - 000°19'17'' E
-47°11'32'' N - 000°20'29'' E
-47°05'03'' N - 000°35'51'' E
+43°38’38’’N - 006°25’58’’E
+43°38’32’’N - 006°26’41’’E
+43°38’18’’N - 006°26’40’’E
+43°38’26’’N - 006°25’51’’E
+43°38’38’’N - 006°25’58’’E
                     """
 
     sCircle = sCircle.strip()
     sAvx = sAvx.strip()
     if sCircle: makeAixm(sCircle=sCircle, sRadius=sRadius)
     if sAvx: makeAixm(sAvx=sAvx)
+
+
+
+## Rappel de definition des hauteurs & Altitudes ###
+
+##  0FT - GNL (ou SFC)
+#   <codeDistVerLower>HEI</codeDistVerLower>
+#   <valDistVerLower>0</valDistVerLower>
+#   <uomDistVerLower>FT</uomDistVerLower>
+
+##  800FT AGL (ou ASFC)
+#   <codeDistVerUpper>HEI</codeDistVerUpper>
+#   <valDistVerUpper>800</valDistVerUpper>
+#   <uomDistVerUpper>FT</uomDistVerUpper>
+
+##  800FT AMSL
+#   <codeDistVerUpper>ALT</codeDistVerUpper>
+#   <valDistVerUpper>800</valDistVerUpper>
+#   <uomDistVerUpper>FT</uomDistVerUpper>
+
+##  FL075
+#   <codeDistVerUpper>STD</codeDistVerUpper>
+#   <valDistVerUpper>75</valDistVerUpper>
+#   <uomDistVerUpper>FL</uomDistVerUpper>
+
+## Cas Double altitude de Plancher
+#   <codeDistVerUpper>STD</codeDistVerUpper>
+#   <valDistVerUpper>115</valDistVerUpper>
+#   <uomDistVerUpper>FL</uomDistVerUpper>
+#   <codeDistVerLower>ALT</codeDistVerLower>
+#   <valDistVerLower>5000</valDistVerLower>
+#   <uomDistVerLower>FT</uomDistVerLower>
+#   <codeDistVerMnm>HEI</codeDistVerMnm>
+#   <valDistVerMnm>1000</valDistVerMnm>
+#   <uomDistVerMnm>FT</uomDistVerMnm>
+
+## Cas Double altitude de Plafond
+#   <codeDistVerUpper>HEI</codeDistVerUpper>
+#   <valDistVerUpper>1000</valDistVerUpper>
+#   <uomDistVerUpper>FT</uomDistVerUpper>
+#   <codeDistVerLower>HEI</codeDistVerLower>
+#   <valDistVerLower>0</valDistVerLower>
+#   <uomDistVerLower>FT</uomDistVerLower>
+#   <codeDistVerMax>HEI</codeDistVerMax>
+#   <valDistVerMax>3300</valDistVerMax>
+#   <uomDistVerMax>FT</uomDistVerMax>
 

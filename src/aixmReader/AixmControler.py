@@ -65,7 +65,7 @@ class AixmControler:
         self.__MakePoints4map:bool = False          #Construction de points complémentaires pour mise au point de la sorties geojson
 
         self.bOpenairOptimizeArc:bool = False       #Openair - Ne pas optimiser l'Arc car l'alignement du 1er point de l'arc de cercle ne coincide souvent pas avec le point théorique du départ de l'arc !? - Optimisation des sorties d'Arc en Openair (suppression des Point de début et de Fin d'arc (DP) en doublon avec la description de l'arc)
-        self.bOpenairOptimizePoint:bool = True      #Openair - Optimisation des sorties des Points (DP). Exp src="DP 46:03:04.000 N 000:31:01.1200 W" optimize="DP 46:3:4N 0:31:1.12W"
+        self.bOpenairOptimizePoint:bool = False     #Openair -STD = False car Demande de Jacques Fournier du 23/05/2022 - Ne pas optimiser les point GPS car probleme de formalisme OpenAir pour certains parseue du Software-FAI pour les PWC -- Optimisation des sorties des Points (DP). Exp src="DP 46:03:04.000 N 000:31:01.1200 W" optimize="DP 46:3:4N 0:31:1.12W"
         self.geojsonDigitOptimize:int =  6          #parameter for optimize output geometry coordinates (default=6 digits)
         self.openairDigitOptimize:int = -1          #parameter for optimize output geometry coordinates (default=-1 no-optimize)
         self.epsilonReduce:float = -1               #parameter for Ramer-Douglas-Peucker Algorithm (https://github.com/fhirschmann/rdp) (default=-1 no-optimize)

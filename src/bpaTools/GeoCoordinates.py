@@ -239,7 +239,7 @@ def dmd2dms(degrees, mindec, ref:str="") -> tuple:
 #   Contrôle de coordonnées
 #       http://family.mayer.free.fr/bateau/conversion_DMS_DMM_DD/Copie%20de%20calculators.htm
 #       https://www.guide-plaisance-mobile.fr/convertisseur-de-coordonnees-gps-degres-minutes-secondes-decimales
-def geoStr2coords(latitude=None, longitude=None, outFrmt:str="std", sep1="", sep2="", bOptimize:bool=True, digit:int=-1) -> tuple:     #tuple(str)
+def geoStr2coords(latitude=None, longitude=None, outFrmt:str="std", sep1="", sep2="", bOptimize:bool=False, digit:int=-1) -> tuple:     #tuple(str)
     ##############################
     # Aixm Normalisation
     # Aixm LATITUDE native format:
@@ -743,7 +743,7 @@ if __name__ == '__main__':
                     print("     d=1", resDmsSepOptDig1)
                     resDmsSepOptDig0 = geoStr2coords(sLatSrc, sLonSrc, "dms", sep1=":", sep2="", bOptimize=False, digit=0)
                     print("     d=0", resDmsSepOptDig0)
-                    resDmsSepOptDig0 = geoStr2coords(sLatSrc, sLonSrc, "dms", sep1=":", sep2="", bOptimize=True, digit=0)
+                    resDmsSepOptDig0 = geoStr2coords(sLatSrc, sLonSrc, "dms", sep1=":", sep2=" ", bOptimize=True, digit=0)
                     print("opti d=0", resDmsSepOptDig0)
 
                     print()

@@ -13,7 +13,7 @@ try:
 except ImportError:
     xmlSIA = None
 
-
+cstOpenair                  = "OpenAir"
 cstGeometry:str             = "geometry"         #Stockage du tracé Openair
 openairAixmHeader:str       = "***(aixmParser) "
 openairAixmSegmnt:str       = openairAixmHeader + "Openair Segments "
@@ -23,7 +23,7 @@ errLocalisationPoint:list   = ["DP 45:00:00 N 005:00:00 W"]
 
 #   digit = Integer parameter for optimize Openair output geometry coordinates (Default=-1 no-change source, n for round(coords, n, sample=0)
 #   epsilonReduce = Float parameter of Ramer-Douglas-Peucker Algorithm (https://github.com/fhirschmann/rdp) for optimize output (Default=0 removal-duplicates-values and no-optimize, <0 for no-optimize or >0 for optimize, sample=0.0001)
-def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float=-1, nbMaxSegment:int=-1, epsilonrDyn:bool=False, oLog:bpaTools.Logger=None) -> list:
+def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float=-1, nbMaxSegment:int=-1, epsilonrDyn:bool=False, bOpenairOptimizePoint:bool=False, oLog:bpaTools.Logger=None) -> list:
     openair:list = []
     oZone:dict = oAirspace.get("properties", oAirspace)
     theClass:str = oZone["class"]
@@ -66,7 +66,7 @@ def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float
     else:
         openair.append('*AAlt ["{0}", "{1}"]'.format(aAlt[0], aAlt[1]))
 
-    if "desc" in oZone:     openair.append("*ADescr {0}".format(oZone["desc"]))
+    if "desc" in oZone: openair.append("*ADescr {0}".format(oZone["desc"]))
     if ("activationCode" in oZone) and ("activationDesc" in oZone):       openair.append("*AActiv [{0}] {1}".format(oZone["activationCode"], oZone["activationDesc"]))
     if ("activationCode" in oZone) and not ("activationDesc" in oZone):   openair.append("*AActiv [{0}]".format(oZone["activationCode"]))
     if not("activationCode" in oZone) and ("activationDesc" in oZone):    openair.append("*AActiv {0}".format(oZone["activationDesc"]))
@@ -87,9 +87,9 @@ def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float
     if bool(oZone.get("exceptHOL", False)):         openair.append("*AExHOL Yes")
     if bool(oZone.get("seeNOTAM",  False)):         openair.append("*ASeeNOTAM Yes")
     openair.append("AH {0}".format(parseAlt("AH", gpsType, oZone)))
-    if oZone.get("ordinalUpperMaxM", False):        openair.append("*AH2 {0}".format(oZone["upperMax"]))
+    if oZone.get("upperMax", False):        openair.append("*AH2 {0}".format(oZone["upperMax"]))
     openair.append("AL {0}".format(parseAlt("AL", gpsType, oZone)))
-    if oZone.get("ordinalLowerMinM", False):        openair.append("*AL2 {0}".format(oZone["lowerMin"]))
+    if oZone.get("lowerMin", False):        openair.append("*AL2 {0}".format(oZone["lowerMin"]))
 
     #Récupération des tracés de base
     oaMap:list = []
@@ -126,7 +126,7 @@ def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float
             epsilonReduce=0.0                           #0.0 imposer la suppression de doublons
         #else:  #Cas 20 <= iOrgSize < 200
         #    Ne pas changer le coef 'epsilonReduce'     #0.0 standard || 0.0001 filtre || 0.0006 région
-        oaMap = __optimizeMap(oaMap, digit, epsilonReduce, oLog)
+        oaMap = __optimizeMap(oaMap, digit, epsilonReduce, bOpenairOptimizePoint, oLog)
 
     iNewSize:int = __getNbSegments(oaMap)
     iCount:int = 0
@@ -138,7 +138,7 @@ def makeOpenair(oAirspace:dict, gpsType:str, digit:float=-1, epsilonReduce:float
         while iCount<50 and iDelta>0:
             iCount += 1                                                             #End While: iCount==50
             epsilonReduce:float = round(orgEpsilonReduce*(1 + (iCount*0.2)), 6)     #End while: 0.002*(1 + (0.2*50)) = 0.022
-            oaMap = __optimizeMap(oaMap, digit, epsilonReduce, oLog)
+            oaMap = __optimizeMap(oaMap, digit, epsilonReduce, bOpenairOptimizePoint, oLog)
             iNewSize = __getNbSegments(oaMap)
             iDelta = iNewSize - nbMaxSegment
             #oLog.debug("RDP Optimisation Delta: {0} - count={1} rdp={2} / orgSize{3} newSize={4} (delta={5})".format(theName, iCount, epsilonReduce, iOrgSize, iNewSize, iDelta), level=1, outConsole=False)
@@ -180,7 +180,7 @@ def __getNbSegments(oaMap:list) -> int:
 
 #Optimisation de la sortie Openair selon l'algo 'Ramer-Douglas-Peucker'
 #Optimise les coordonnées Openair sur la base des coordonnées DMS au format Openair
-def __optimizeMap(oaMap:list, digit:float, epsilonReduce:float, oLog:bpaTools.Logger=None) -> list:
+def __optimizeMap(oaMap:list, digit:float, epsilonReduce:float, bOpenairOptimizePoint:bool, oLog:bpaTools.Logger=None) -> list:
     newMap:list = []
     oIdx:dict = {}
 
@@ -193,6 +193,11 @@ def __optimizeMap(oaMap:list, digit:float, epsilonReduce:float, oLog:bpaTools.Lo
             for dmsPt in retMap:
                 if dmsPt[0:len(openairAixmHeader)]==openairAixmHeader:
                     print("stop")
+                dmsPt = dmsPt.replace(" N","N")         #Cleaning
+                dmsPt = dmsPt.replace(" S","S")         #Cleaning
+                dmsPt = dmsPt.replace(" E","E")         #Cleaning
+                dmsPt = dmsPt.replace(" W","W")         #Cleaning
+                dmsPt = dmsPt.replace(" O","O")         #Cleaning
                 aPtDms = dmsPt.split(" ")
                 ptDD = bpaTools.GeoCoordinates.geoStr2coords(aPtDms[1], aPtDms[2], "dd", 8)
                 tmpMap.append(ptDD[::-1])                           #Invertion des coordonnées
@@ -201,7 +206,7 @@ def __optimizeMap(oaMap:list, digit:float, epsilonReduce:float, oLog:bpaTools.Lo
                 newMap:list = []
                 for ddPt in rdpMap:
                     lon, lat = ddPt
-                    ptDMS = bpaTools.GeoCoordinates.geoStr2coords(lat, lon, "dms", sep1=":", sep2="", bOptimize=True, digit=digit)
+                    ptDMS = bpaTools.GeoCoordinates.geoStr2coords(lat, lon, "dms", sep1=":", sep2=" ", bOptimize=bOpenairOptimizePoint, digit=digit)
                     sPoint:str = "DP {0} {1}".format(ptDMS[0], ptDMS[1])
                     newMap.append(sPoint)
                     if oLog:
@@ -276,16 +281,17 @@ class Aixm2openair:
         self.oAirspacesCatalog = None
         self.geoBorders = None                  #Geographic borders dictionary
         self.geoAirspaces = None                #Geographic airspaces dictionary
+        self.aAsIndex = []                      #Index spécifique pour classement par Nommage des zones
         self.openairDigitOptimize:int = -1      #Parameter for optimize output geometry coordinates (default=-1 no-optimize)
         self.epsilonReduce:float = -1           #Default value=-1 for no-compression
-        self.sOutFrmt = "D:M:S.ssX" if self.oCtrl.bOpenairOptimizePoint else "DD:MM:SS.ssX"
+        self.sOutFrmt = "D:M:S.ssX" if self.oCtrl.bOpenairOptimizePoint else "DD:MM:SS.ss X"
         return
 
     def parseGeographicBorders(self) -> None:
         sTitle = "Geographic borders"
         sXmlTag = "Gbr"
 
-        sMsg = "Parsing {0} to OpenAir - {1}".format(sXmlTag, sTitle)
+        sMsg = cstOpenair + ": Parsing {0} to OpenAir - {1}".format(sXmlTag, sTitle)
         self.oCtrl.oLog.info(sMsg)
 
         if self.geoBorders == None:
@@ -330,6 +336,7 @@ class Aixm2openair:
 
     def parseAirspacesBorders(self, airspacesCatalog) -> None:
         self.oAirspacesCatalog = airspacesCatalog
+        self.makeCatalogIndex()
 
         #Controle de prerequis
         if self.geoBorders == None:
@@ -343,13 +350,15 @@ class Aixm2openair:
             self.oCtrl.oLog.warning(sMsg, outConsole=True)
             return
 
-        sMsg = "Parsing {0} to OpenAir - {1}".format(sXmlTag, sTitle)
+        sMsg = cstOpenair + ": Parsing {0} to OpenAir - {1}".format(sXmlTag, sTitle)
         self.oCtrl.oLog.info(sMsg)
 
         barre = bpaTools.ProgressBar(len(self.oAirspacesCatalog.oAirspaces), 20, title=sMsg, isSilent=self.oCtrl.oLog.isSilent)
         idx = 0
         self.geoAirspaces = []                #Réinitialisation avant traitement global
-        for k,oZone in self.oAirspacesCatalog.oAirspaces.items():
+        #for k, oZone in self.oAirspacesCatalog.oAirspaces.items():
+        for sGlobalKey, sIdxKey in self.aAsIndex:                                               #Scrutation de l'index des zones triés par nommage
+            oZone = self.oAirspacesCatalog.oAirspaces[sGlobalKey]                               #Identification de la zone dans le catalogue
             idx+=1
             if not oZone["groupZone"]:          #Ne pas traiter les zones de type 'Regroupement'
                 sAseUid = oZone["UId"]
@@ -524,7 +533,7 @@ class Aixm2openair:
                     for ptDD in geom.coords:
                         lon, lat = ptDD
                         if not "dd" in firstCoords:         firstCoords.update({"dd":ptDD[::-1]})           #Invertion des coordonnees
-                        ptDMS = bpaTools.GeoCoordinates.geoStr2coords(lat, lon, "dms", sep1=":", sep2="", bOptimize=True, digit=self.oCtrl.openairDigitOptimize)
+                        ptDMS = bpaTools.GeoCoordinates.geoStr2coords(lat, lon, "dms", sep1=":", sep2=" ", bOptimize=self.oCtrl.bOpenairOptimizePoint, digit=self.oCtrl.openairDigitOptimize)
                         if not "dms" in firstCoords:        firstCoords.update({"dms":ptDMS})
                         sPoint = "DP {0} {1}".format(ptDMS[0], ptDMS[1])
                         firstPoint = self.pointMemory(firstPoint, sPoint)
@@ -601,7 +610,7 @@ class Aixm2openair:
         if not self.geoAirspaces:                                   #Contrôle si le fichier est vide
             return
         context = aContext[0]
-        sMsg = "Prepare Openair file - {0} / {1} / {2}".format(aContext[1], gpsType, exceptDay)
+        sMsg = cstOpenair + ": Prepare Openair file - {0} / {1} / {2}".format(aContext[1], gpsType, exceptDay)
         self.oCtrl.oLog.info(sMsg)
         barre = bpaTools.ProgressBar(len(self.oAirspacesCatalog.oAirspaces), 20, title=sMsg, isSilent=self.oCtrl.oLog.isSilent)
         idx = 0
@@ -635,7 +644,7 @@ class Aixm2openair:
                 if include==True and exceptDay!="":
                     if exceptDay in oZone:                              include = False
                 if include==True:
-                    openair.append(makeOpenair(o, gpsType, digit=self.openairDigitOptimize, epsilonReduce=self.epsilonReduce, oLog=self.oCtrl.oLog))
+                    openair.append(makeOpenair(o, gpsType, digit=self.openairDigitOptimize, epsilonReduce=self.epsilonReduce, bOpenairOptimizePoint=self.oCtrl.bOpenairOptimizePoint, oLog=self.oCtrl.oLog))
             barre.update(idx)
         barre.reset()
         if openair:
@@ -652,7 +661,7 @@ class Aixm2openair:
         #if self.oAirspacesCatalog.cleanAirspacesCalalog:     #Contrôle si l'optimisation est déjà réalisée
         #    return
 
-        sMsg = "Clean catalog"
+        sMsg = cstOpenair + ": Clean catalog"
         self.oCtrl.oLog.info(sMsg)
         barre = bpaTools.ProgressBar(len(self.geoAirspaces), 20, title=sMsg, isSilent=self.oCtrl.oLog.isSilent)
         idx = 0
@@ -662,20 +671,20 @@ class Aixm2openair:
             idx+=1
 
             #Flag all not valid area
-            oGeom:dict = o[cstGeometry]                          #Sample - "geometry": {"type": "Polygon", "coordinates": [[['DP 44:21:02 N 001:28:43 E'], ../..
+            oGeom:dict = o[cstGeometry]                                 #Sample - "geometry": {"type": "Polygon", "coordinates": [[['DP 44:21:02 N 001:28:43 E'], ../..
             if len(oGeom)==0:
                 oZone.update({"excludeAirspaceNotCoord":True})          #Flag this change in catalog
                 lNbChange+=1
 
-            if len(oGeom)==1:                               #Point
+            if len(oGeom)==1:                                           #Point
                 exclude=True
-                oZone.update({"geometryType":"Point"})        #info for catalog "Point"
+                oZone.update({"geometryType":"Point"})                  #info for catalog "Point"
                 #Transformer systématiquement les 'Point simples' en cercle de rayon 1 Km = 0.54 NM (Nautic Milles)
                 #exemple d'un Point d'ogigine: ['DP 44:21:02 N 001:28:43 E']
                 #se transforme en - ['V X=44:21:02 N 001:28:43 E', 'DC 0.54']
                 oGeom[0] = "V X=" + oGeom[0][3:]
                 oGeom.append("DC 0.54")
-            elif len(oGeom)==2 and oGeom[0][:4]!="V X=":    #Line
+            elif len(oGeom)==2 and oGeom[0][:4]!="V X=":                #Line
                 exclude=True
             else:
                 exclude=False
@@ -691,5 +700,35 @@ class Aixm2openair:
         if lNbChange>0:
             self.oAirspacesCatalog.saveAirspacesCalalog()               #Save the new catalogs
 
-        self.oAirspacesCatalog.cleanAirspacesCalalog = True  #Marqueur de traitement réalisé
+        self.oAirspacesCatalog.cleanAirspacesCalalog = True             #Marqueur de traitement réalisé
+        return
+
+    def makeCatalogIndex(self) -> None:
+        """
+        Tri Alphabetique des zones sur la base du nom court 'name' ex:CLERMONT 1.20 ; ou si le nomage est vide on prend 'nameV' qui contient systématiquement la typologie de zone. ex: TMA CLERMONT 1.20 App(122.225) Lower(1000FT AGL-2700FT AMSL)
+        Sample self.aAsIndex = [
+                #(<UId>     , <Key for index>),
+                ('123456'   , 'CLERMONT 1.20'),     # TMA CLERMONT 1.20 App(122.225) Lower(1000FT AGL-2700FT AMSL)
+                ('789456'   , 'CLERMONT 2'),        # TMA CLERMONT 2 App(122.225)
+                ('456123'   , 'CLERMONT 3'),        # TMA CLERMONT 3 App(122.225)
+                etc ../..
+            ]
+        """
+        if len(self.aAsIndex)>0:                                                         #Eviter la réantrance d'indexation
+            return
+
+        sMsg = cstOpenair + " airspaces make index"
+        barre = bpaTools.ProgressBar(len(self.oAirspacesCatalog.oAirspaces), 20, title=sMsg)
+        idx = 0
+        aTmp = []
+        for sGlobalKey, oAs in self.oAirspacesCatalog.oAirspaces.items():                 #Traitement du catalogue global complet
+            idx+=1
+            if oAs["name"]=="":
+                sIdxKey = oAs["nameV"]
+            else:
+                sIdxKey = oAs["name"]
+            aTmp.append((oAs["UId"], sIdxKey))
+            barre.update(idx)
+        barre.reset()
+        self.aAsIndex = sorted(aTmp, reverse=False, key=lambda oTmp: oTmp[1])             #Tri alphanumérique
         return

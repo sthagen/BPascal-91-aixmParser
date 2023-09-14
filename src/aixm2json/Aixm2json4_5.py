@@ -423,6 +423,9 @@ class Aixm2json4_5:
         g = []              #geometry GeoJSON
         points4map = []
 
+        #Map 20230912
+        self.oCtrl.oLog.info("parseAirspaceBorder({0})".format(oZone["id"]), outConsole=False)
+
         #Init
         bIsSpecCircle:bool = False
         bIsCircle:bool = bool(oBorder.Circle)   #Zone uniqumement contituée d'un cercle
@@ -485,7 +488,10 @@ class Aixm2json4_5:
                 elif codeType in ["CCA", "CWA"]:
                     start = self.oCtrl.oAixmTools.geo2coordinates("dd", avx, oZone=oZone)[::-1]
                     if avx_cur+1 == len(avx_list):
-                        stop = g[0]
+                        if len(g) == 0:
+                            stop = start
+                        else:
+                            stop = g[0]
                     else:
                         stop = self.oCtrl.oAixmTools.geo2coordinates("dd", avx_list[avx_cur+1], oZone=oZone)[::-1]
 

@@ -21,6 +21,7 @@ if __name__ == '__main__':
     #srcFile = "../tst/aixm4.5_SIA-FR_ctrl-Airspaces.xml"
     #srcFile = "../../poaff/input/Tests/99999999_BPa_Test4CleaningCatalog_aixm45.xml"
     #srcFile = "../../poaff/input/Tests/99999999_BPa_Test4AppendDelta1_aixm45.xml"
+    #srcFile = "../../poaff/input/Tests/99999999_BPa_Test4AppendDelta2_aixm45.xml"
     #srcFile = "../../poaff/input/Tests/99999999_BPa_TestBORDERs_aixm45.xml"
     #srcFile = "../../poaff/input/Tests/99999999_BPa_Test4Circles_Arcs_aixm45.xml"
     #srcFile = "../../poaff/input/Tests/99999999_BPa_Test4ZonesWithArc.xml"
@@ -30,11 +31,16 @@ if __name__ == '__main__':
     #srcFile = "../../poaff/input/FFVP/20191214_FFVP_BirdsProtect_aixm45.xml"
     #srcFile = "../../poaff/input/FFVL/20210104_FFVL_ParcBauges_BPa_aixm45.xml"
     #srcFile = "../../poaff/input/FFVL/20210122_FFVL_ZonesComplementaires_aixm45.xml"
-    #srcFile = "../../poaff/input/BPa/20210114_LTA-French1-HR_BPa_aixm45.xml"
-    #srcFile = "../../poaff/input/BPa/20201210_BPa_ZonesComplementaires_aixm45.xml"
-    srcFile = "../../poaff/input/BPa/20220402_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml"
+    #srcFile = "../../poaff/input/BPa/20210101_LTA-ExtractSIA_BPa_aixm45.xml"
+    #srcFile = "../../poaff/input/BPa/20230313_LTA-ExtractSIA_BPa_aixm45.xml"
+    #srcFile = "../../poaff/input/BPa/20230331_BPa_ZonesComplementaires_aixm45.xml"
+    #srcFile = "../../poaff/input/BPa/20230330_BPa_FR-ZSM_Protection-des-rapaces_aixm45.xml"
     #srcFile = "../../poaff/input/FFVL/20220402_FFVL_ProtocolesParticuliers_BPa_aixm45.xml"
-    #srcFile = "../../poaff/input/BPa/20220314_BPa_FR-SIA-SUPAIP_aixm45.xml"
+    #srcFile = "../../poaff/input/BPa/20230417_BPa_FR-SIA-SUPAIP_aixm45.xml"
+
+    #sSrcPath:str = "D:/_Users_/BPascal/_4_Src/GitHub/poaff/input/LPO_Biodiv/"
+    #srcFile = sSrcPath + "20230401_biodiv-sports-fr_Parc_aixm45.xml"
+    #srcFile = sSrcPath + "20230403_biodiv-sports-fr_Zsm-Active_aixm45.xml"
 
 
     ####  quelques options d'appels  ####
