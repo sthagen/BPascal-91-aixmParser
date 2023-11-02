@@ -27,7 +27,7 @@ if __name__ == '__main__':
     logFile             = outPath + "_" + appName + ".log"
     bpaTools.createFolder(outPath)                                  #Init dossier de sortie
 
-    oLog = bpaTools.Logger(appId,logFile)
+    oLog = bpaTools.Logger(appId, logFile, callingContext, linkContext)
     oLog.resetFile()
 
     oGEH = GroundEstimatedHeight(oLog, srcPath, refPath, headFileName)

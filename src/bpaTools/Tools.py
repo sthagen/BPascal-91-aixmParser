@@ -110,7 +110,12 @@ def getFileNameExt(sFile:str) -> str:
     return os.path.basename(sFile)
 
 def getFileName(sFile:str) -> str:
-    return os.path.basename(sFile).split(".")[0]
+    #return os.path.basename(sFile).split(".")[0]   #Ne fonctionne pas pour des fichiers dont le nom contient plusieurs points '.'
+    sFileNameExt:str = getFileNameExt(sFile)
+    lIdx:int = sFileNameExt.rfind(".")
+    if lIdx>=0:
+        return sFileNameExt[:lIdx]
+    return sFileNameExt
 
 def getFileExt(sFile:str) -> str:
     return os.path.splitext(sFile)[1]

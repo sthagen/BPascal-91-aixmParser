@@ -4,6 +4,7 @@ import bpaTools
 import aixmReader
 import aixm2json
 import aixm2openair
+import aixm2aixm
 import sys, traceback
 
 
@@ -13,6 +14,8 @@ class CONST:
     pi = 3.1415926                      # PI angle
     frmtGEOJSON = "-Fgeojson"
     frmtOPENAIR = "-Fopenair"
+    frmtAIXM45 = "-Faixm45"
+    frmtAIXM51 = "-Faixm51"
     frmtALL = "-Fall"
     typeAIRSPACES = "-Airspaces"
     typeOBSTACLES = "-Obstacles"
@@ -41,7 +44,6 @@ class CONST:
             optVFR:["vfr", "VFR map (Visual Flihgt Rules"],
             optFreeFlight:["ff", "FreeFlight map (Paragliding / Hanggliding)"]
             }
-
 
 
 class AixmControler:
@@ -82,7 +84,6 @@ class AixmControler:
         if bValue:
             self.oLog.warning("/!\ Draft mode for circles design", outConsole=True)
         return
-
 
     @property
     def MakePoints4map(self):
@@ -161,6 +162,8 @@ class AixmControler:
                 sys.exit()
         elif out=="openair":
             return aixm2openair.Aixm2openair(self)
+        elif out=="aixm45":
+            return aixm2aixm.Aixm2aixm4_5(self)
         else:
             sys.stderr.write("Sorry, this format are not supported at this time.\n")
             traceback.print_exc(file=sys.stdout)
@@ -180,6 +183,59 @@ class AixmControler:
         return
 
 
+    def execCleaner(self, oOpts):
+        bExec:bool = False
+
+        #############################################################################################
+        #Phase0 - Lecture du fichier aixm source
+        found = any(item in (CONST.frmtAIXM45) for item in oOpts.keys())
+        if found:
+            self.oAixm = aixmReader.AixmReader(self)
+            o2aixm = self.getFactory("parser", "aixm45")        #Récupération dynamique du parser aixm/aixm associé au format du fichier source
+
+            found = any(item in (CONST.typeGEOBORDER) for item in oOpts.keys())
+            if found:
+                sTitle = "Geographic borders"
+                sXmlTag = "Gbr"
+                sExtFile:str = "_geographic-border"
+                o2aixm.copyNodes(sTitle, sXmlTag, sExtFile)
+                bExec = True
+
+            found = any(item in (CONST.typeAIRSPACES) for item in oOpts.keys())
+            if found:
+                sTitle = "Airspaces Catalog"
+                sXmlTag = "Ase"
+                sExtFile:str = "_airspaces-catalog"
+                o2aixm.copyNodes(sTitle, sXmlTag, sExtFile)
+
+                sTitle = "Airspaces Borders"
+                sXmlTag = "Abd"
+                sExtFile:str = "_airspaces-border"
+                o2aixm.copyNodes(sTitle, sXmlTag, sExtFile)
+
+                sTitle = "Airspaces Groups"
+                sXmlTag = "Adg"
+                sExtFile:str = "_airspaces-group"
+                o2aixm.copyNodes(sTitle, sXmlTag, sExtFile)
+
+                #Les Obstacles ne me sont pas utile actuellement
+                #sTitle = "Obstacles"
+                #sXmlTag = "Obs"
+                #sExtFile:str = "_airspaces-obstacle"
+                #o2aixm.copyNodes(sTitle, sXmlTag, sExtFile)
+
+                #Les Services ne me sont pas utile actuellement
+                #sTitle = "Airspaces Services"
+                #sXmlTag = "Sae"
+                #sExtFile:str = "_airspaces-service"
+                #o2aixm.copyNodes(sTitle, sXmlTag, sExtFile)
+
+                bExec = True
+
+        return bExec
+
+
+
     def execParser(self, oOpts, bOnlyCatalogConstruct:bool=False):
         self.ALL:bool                   = bool(CONST.optALL in oOpts)
         self.IFR:bool                   = bool(CONST.optIFR in oOpts)
@@ -191,7 +247,7 @@ class AixmControler:
         self.openairDigitOptimize:int   = int(oOpts.get(aixmReader.CONST.optOpenairDigitOptimize, -1))      #Default=-1 not optimized
         self.epsilonReduce:float        = float(oOpts.get(aixmReader.CONST.optEpsilonReduce, -1))           #Defualt=-1 not optimized
 
-        bExec = False
+        bExec:bool = False
 
         #############################################################################################
         #Phase0 - Mise au point pour sorties geojson (sans lecture de fichier source)

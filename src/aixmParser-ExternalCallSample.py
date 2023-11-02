@@ -15,7 +15,6 @@ if __name__ == '__main__':
     logFile             = outPath + "_" + appName + ".log"
     bpaTools.createFolder(outPath)                                  #Init dossier de sortie
 
-
     ####  Source test file  ####
     srcFile = "../tst/aixm4.5_SIA-FR_map-Airspaces.xml"
     #srcFile = "../tst/aixm4.5_SIA-FR_ctrl-Airspaces.xml"
@@ -49,24 +48,24 @@ if __name__ == '__main__':
     #aArgv = [appName, srcFile, "-Fgeojson", aixmReader.CONST.optTstGeojson, aixmReader.CONST.optDraft]
     #aArgv = [appName, srcFile, "-Fgeojson", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optFreeFlight, aixmReader.CONST.optMakePoints4map]
     #------- tests de non-reg ---
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeCTRLTOWERS]
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeAERODROMES]
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeOBSTACLES]
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeRUNWAYCENTER]
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeGATESTANDS]
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeGEOBORDER]
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight]
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optFreeFlight]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeCTRLTOWERS]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeAERODROMES]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeOBSTACLES]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeRUNWAYCENTER]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeGATESTANDS]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeGEOBORDER]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optFreeFlight]
     #------- appels standards ---
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optFreeFlight]
-    aArgv = [appName, srcFile, "-Fall", "-Tall", aixmReader.CONST.optALL, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optFreeFlight]
+    aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeALL, aixmReader.CONST.optALL, aixmReader.CONST.optIFR, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight]
 
 
-    #### poaf - Spec test for bigData ####
+    #### 4POAFF - Tests for real bigData files ####
     #srcFile = "../../poaff/input/SIA/20200813-20200909_aixm4.5_SIA-FR.xml"
     #srcFile = "../../poaff/input/EuCtrl/20200618_aixm4.5_Eurocontrol-FR.xml"
     #srcFile = "../../poaff/input/EuCtrl/20201231_aixm4.5_Eurocontrol-Euro_BPa.xml"
-    #aArgv = [appName, srcFile, "-Fall", aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight]
+    #aArgv = [appName, srcFile, aixmReader.CONST.frmtALL, aixmReader.CONST.typeAIRSPACES, aixmReader.CONST.optVFR, aixmReader.CONST.optFreeFlight]
 
 
     ####  Ajout d'options d'appel  ####
