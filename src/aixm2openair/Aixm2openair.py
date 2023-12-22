@@ -421,7 +421,7 @@ class Aixm2openair:
             nInt, nDec = str(radius).split(".")
             if radius > 1:                          #Au delà d'un rayon de 1850 mètres (1 Mile Nautic)
                 if len(nDec)>3:                     #Reste de division du type '0.01'
-                    radius2:Decimal = Decimal(radius).quantize(Decimal('0.1'), decimal.ROUND_UP)            #Arrondi suppérieur
+                    radius2:Decimal = Decimal(radius).quantize(Decimal('0.01'), decimal.ROUND_UP)           #Arrondi suppérieur
                 else:
                     radius2:Decimal = radius        #Pas besoin d'arrondi
             else:

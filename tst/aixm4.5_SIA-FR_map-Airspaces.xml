@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--<AIXM-Snapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.aixm.aero/schema/4.5/AIXM-Snapshot.xsd" created="2019-11-20T10:43:01.141+01:00" origin="Sia-France" version="4.5" effective="2019-12-05T00:00:00.000+01:00">
 -->
-<AIXM-Snapshot created="2020-03-18T17:50:01.141+01:00" origin="Sia-France" version="4.5" effective="2019-12-05T00:00:00.000+01:00">
+<AIXM-Snapshot created="2020-03-18T17:50:01.141+01:00" origin="Sia-France" version="4.5" effective="2023-12-22T00:00:00.000+01:00">
 	<Gbr>
 		<GbrUid mid="1545002">
 			<txtName>FRANCE_SWITZERLAND</txtName>
@@ -16829,8 +16829,8 @@ Flying over LUXEUIL SAINT- SAUVEUR AD BLW 1000ft ASFC prohibited H24.</txtRmk>
 			<geoLatCen>483811.00N</geoLatCen>
 			<geoLongCen>0013040.00E</geoLongCen>
 			<codeDatum>WGE</codeDatum>
-			<valRadius>10</valRadius>
-			<uomRadius>NM</uomRadius>
+			<valRadius>3</valRadius>
+			<uomRadius>KM</uomRadius>
 		</Circle>
 	</Abd>
 	<Abd>
