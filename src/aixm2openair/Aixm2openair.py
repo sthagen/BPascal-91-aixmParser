@@ -356,7 +356,7 @@ class Aixm2openair:
         barre = bpaTools.ProgressBar(len(self.oAirspacesCatalog.oAirspaces), 20, title=sMsg, isSilent=self.oCtrl.oLog.isSilent)
         idx = 0
         self.geoAirspaces = []                #Réinitialisation avant traitement global
-        #for k, oZone in self.oAirspacesCatalog.oAirspaces.items():
+        #for k, oZone in self.oAirspacesCatalog.oAirspaces.items():                              #Analyse sans tri des données
         for sGlobalKey, sIdxKey in self.aAsIndex:                                               #Scrutation de l'index des zones triés par nommage
             oZone = self.oAirspacesCatalog.oAirspaces[sGlobalKey]                               #Identification de la zone dans le catalogue
             idx+=1

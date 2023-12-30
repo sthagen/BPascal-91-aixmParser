@@ -41,6 +41,11 @@ if __name__ == '__main__':
     #srcFile = sSrcPath + "20230401_biodiv-sports-fr_Parc_aixm45.xml"
     #srcFile = sSrcPath + "20230403_biodiv-sports-fr_Zsm-Active_aixm45.xml"
 
+    #sSrcPath:str = "D:\_Users_\BPascal\_4_Src\GitHub\poaff\input\SpotAir/"
+    #srcFile = sSrcPath + "20231229c_zsm-SpotAir_aixm45.xml"
+
+    sSrcPath:str = "D:\_Users_\BPascal\_4_Src\GitHub\poaff\input\STAC/"
+    srcFile = sSrcPath + "20240229_ZSM-coeur-france_aixm45.xml"
 
     ####  quelques options d'appels  ####
     #Simulation des arguments d'appels 'sys.argv' via le tableau 'aArgv'
